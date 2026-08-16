@@ -1,348 +1,1025 @@
-ition.x)*.18;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
- if(!grounded){
+<title>XO Arena</title>
 
-  velocityY-=.018;
-
-  player.position.y+=velocityY;
-
-  if(player.position.y<=0){
-
-   player.position.y=0;
-   velocityY=0;
-   grounded=true;
-  }
- }
-
- if(sliding){
-
-  slideTimer-=dt;
-
-  if(slideTimer<=0)
-   sliding=false;
- }
-
- /* الحركة الانحنائية */
-
- const desiredScaleY=
-  sliding?.55:1;
-
- body.scale.y+=
-  (desiredScaleY-body.scale.y)*.25;
-
- head.position.y=
-  sliding?1.25:1.9;
-
- score+=speed*.08;
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
 }
 
-
-/* =========================
-   زيادة السرعة
-========================= */
-
-function updateDifficulty(){
-
- speed+=.000035;
-
- if(speed>1.15)
-  speed=1.15;
+html,body{
+    width:100%;
+    min-height:100%;
+    font-family:Arial,sans-serif;
+    background:
+        radial-gradient(circle at top,#263d63,#0b1020 60%);
+    color:white;
 }
 
-
-/* =========================
-   Game Over
-========================= */
-
-function endGame(){
-
- if(gameOver)return;
-
- gameOver=true;
- running=false;
-
- const old=
-  Number(
-   localStorage.getItem(
-    "rushBest"
-   )||0
-  );
-
- const best=
-  Math.max(
-   old,
-   Math.floor(score)
-  );
-
- localStorage.setItem(
-  "rushBest",
-  best
- );
-
- document.getElementById(
-  "finalScore"
- ).textContent=
-  Math.floor(score);
-
- document.getElementById(
-  "finalCoins"
- ).textContent=
-  coins;
-
- document.getElementById(
-  "bestScore"
- ).textContent=
-  best;
-
- document.getElementById(
-  "gameover"
- ).style.display=
-  "flex";
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
 }
 
-
-/* =========================
-   UI
-========================= */
-
-function updateUI(){
-
- document.getElementById(
-  "scoreText"
- ).textContent=
-  Math.floor(score);
-
- document.getElementById(
-  "coinText"
- ).textContent=
-  coins;
-
- document.getElementById(
-  "speedText"
- ).textContent=
-  speed.toFixed(1);
+.app{
+    width:min(100%,520px);
+    text-align:center;
 }
 
+.logo{
+    font-size:46px;
+    font-weight:900;
+    margin-bottom:5px;
+}
 
-/* =========================
-   بداية اللعبة
-========================= */
+.logo span:first-child{
+    color:#4da3ff;
+}
 
-document.getElementById(
- "startBtn"
-).onclick=()=>{
+.logo span:last-child{
+    color:#ff6685;
+}
 
- document.getElementById(
-  "start"
- ).style.display="none";
+.subtitle{
+    color:#aebbd0;
+    margin-bottom:20px;
+}
 
- running=true;
+.menu{
+    background:rgba(12,18,32,.82);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:24px;
+    padding:18px;
+    box-shadow:0 25px 70px rgba(0,0,0,.4);
+}
 
- for(let i=0;i<5;i++)
-  createObstacle();
+.modes{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:15px;
+}
 
- for(let i=0;i<8;i++)
-  createCoin();
+button{
+    border:0;
+    color:white;
+    background:#1b2940;
+    padding:14px;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.15s;
+}
+
+button:active{
+    transform:scale(.96);
+}
+
+button.active{
+    background:#367fff;
+}
+
+.difficulty{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:18px;
+}
+
+.difficulty button{
+    padding:10px 5px;
+    font-size:13px;
+}
+
+.difficulty button.active{
+    background:#e14f75;
+}
+
+.status{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,.05);
+    padding:12px 15px;
+    border-radius:14px;
+    margin-bottom:15px;
+}
+
+.turn{
+    font-weight:bold;
+}
+
+.board{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    width:100%;
+    aspect-ratio:1;
+}
+
+.cell{
+    padding:0;
+    border-radius:18px;
+    background:#17243a;
+    border:2px solid rgba(255,255,255,.07);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:clamp(50px,15vw,90px);
+    font-weight:900;
+    line-height:1;
+    min-width:0;
+    touch-action:manipulation;
+}
+
+.cell.x{
+    color:#4da3ff;
+    text-shadow:0 0 25px rgba(77,163,255,.5);
+}
+
+.cell.o{
+    color:#ff6685;
+    text-shadow:0 0 25px rgba(255,102,133,.5);
+}
+
+.cell.win{
+    background:#304c2e;
+    border-color:#75e35e;
+    animation:pulse .6s infinite alternate;
+}
+
+@keyframes pulse{
+    from{transform:scale(1)}
+    to{transform:scale(.96)}
+}
+
+.score{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:15px;
+}
+
+.scoreBox{
+    background:rgba(255,255,255,.05);
+    border-radius:14px;
+    padding:10px;
+}
+
+.scoreBox b{
+    display:block;
+    font-size:22px;
+    margin-top:3px;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.controls button{
+    flex:1;
+}
+
+#message{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(7px);
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    z-index:10;
+}
+
+.result{
+    width:min(100%,400px);
+    background:#111a2b;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:25px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 30px 80px #000;
+}
+
+.result h2{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.result p{
+    color:#b9c5d8;
+    margin-bottom:18px;
+}
+
+@media(max-width:380px){
+    body{
+        padding:10px;
+    }
+
+    .menu{
+        padding:12px;
+    }
+
+    .cell{
+        border-radius:14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="logo">
+        <span>X</span><span>O</span>
+    </div>
+
+    <div class="subtitle">
+        XO Arena
+    </div>
+
+    <div class="menu">
+
+        <div class="modes">
+            <button id="aiMode" class="active">
+                🤖 ضد الكمبيوتر
+            </button>
+
+            <button id="twoMode">
+                👥 لاعبان
+            </button>
+        </div>
+
+        <div id="difficulty" class="difficulty">
+            <button data-level="easy">
+                سهل
+            </button>
+
+            <button data-level="medium" class="active">
+                متوسط
+            </button>
+
+            <button data-level="hard">
+                صعب
+            </button>
+        </div>
+
+        <div class="status">
+            <div>
+                🎮
+                <span id="turn" class="turn">
+                    دورك
+                </span>
+            </div>
+
+            <div>
+                الجولة:
+                <b id="round">1</b>
+            </div>
+        </div>
+
+        <div id="board" class="board">
+
+            <button class="cell" data-i="0"></button>
+            <button class="cell" data-i="1"></button>
+            <button class="cell" data-i="2"></button>
+
+            <button class="cell" data-i="3"></button>
+            <button class="cell" data-i="4"></button>
+            <button class="cell" data-i="5"></button>
+
+            <button class="cell" data-i="6"></button>
+            <button class="cell" data-i="7"></button>
+            <button class="cell" data-i="8"></button>
+
+        </div>
+
+        <div class="score">
+
+            <div class="scoreBox">
+                ❌
+                <b id="scoreX">0</b>
+            </div>
+
+            <div class="scoreBox">
+                🤝
+                <b id="scoreDraw">0</b>
+            </div>
+
+            <div class="scoreBox">
+                ⭕
+                <b id="scoreO">0</b>
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <button id="newRound">
+                🔄 جولة جديدة
+            </button>
+
+            <button id="resetScore">
+                🗑️ تصفير النتيجة
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="message">
+
+    <div class="result">
+
+        <h2 id="resultTitle">
+            🎉
+        </h2>
+
+        <p id="resultText"></p>
+
+        <button id="resultButton">
+            🔄 الجولة التالية
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const cells=[
+    ...document.querySelectorAll(".cell")
+];
+
+const boardElement=
+    document.getElementById("board");
+
+const turnElement=
+    document.getElementById("turn");
+
+const roundElement=
+    document.getElementById("round");
+
+const message=
+    document.getElementById("message");
+
+const resultTitle=
+    document.getElementById("resultTitle");
+
+const resultText=
+    document.getElementById("resultText");
+
+const resultButton=
+    document.getElementById("resultButton");
+
+const aiMode=
+    document.getElementById("aiMode");
+
+const twoMode=
+    document.getElementById("twoMode");
+
+const difficultyBox=
+    document.getElementById("difficulty");
+
+
+let board=
+    Array(9).fill("");
+
+let currentPlayer="X";
+
+let gameOver=false;
+
+let mode="ai";
+
+let difficulty="medium";
+
+let round=1;
+
+let scores={
+    X:0,
+    O:0,
+    draw:0
 };
 
 
-/* =========================
-   Touch
-========================= */
+const wins=[
 
-let touchStartX=0;
-let touchStartY=0;
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
 
-addEventListener(
- "touchstart",
- e=>{
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
 
-  if(!running)return;
+    [0,4,8],
+    [2,4,6]
 
-  const t=e.touches[0];
-
-  touchStartX=t.clientX;
-  touchStartY=t.clientY;
- },
- {passive:false}
-);
-
-addEventListener(
- "touchend",
- e=>{
-
-  if(!running)return;
-
-  const t=e.changedTouches[0];
-
-  const dx=
-   t.clientX-touchStartX;
-
-  const dy=
-   t.clientY-touchStartY;
-
-  if(
-   Math.abs(dx)<35 &&
-   Math.abs(dy)<35
-  ){
-   jump();
-   return;
-  }
-
-  if(Math.abs(dx)>Math.abs(dy)){
-
-   if(dx>40)
-    moveLane(1);
-
-   if(dx<-40)
-    moveLane(-1);
-
-  }else{
-
-   if(dy<-40)
-    jump();
-
-   if(dy>40)
-    slide();
-  }
- },
- {passive:false}
-);
-
-
-/* أزرار الهاتف */
-
-document.getElementById(
- "jump"
-).addEventListener(
- "pointerdown",
- jump
-);
-
-document.getElementById(
- "slide"
-).addEventListener(
- "pointerdown",
- slide
-);
+];
 
 
 /* =========================
-   Keyboard
+   عرض اللوحة
 ========================= */
 
-addEventListener(
- "keydown",
- e=>{
+function render(){
 
-  if(e.key==="ArrowLeft"||e.key==="a")
-   moveLane(-1);
+    cells.forEach(
+        (cell,index)=>{
 
-  if(e.key==="ArrowRight"||e.key==="d")
-   moveLane(1);
+            cell.textContent=
+                board[index];
 
-  if(e.key==="ArrowUp"||e.key==="w"||e.key===" ")
-   jump();
+            cell.className=
+                "cell";
 
-  if(e.key==="ArrowDown"||e.key==="s")
-   slide();
- }
-);
+            if(board[index]){
+                cell.classList.add(
+                    board[index].toLowerCase()
+                );
+            }
 
-
-/* =========================
-   Game Loop
-========================= */
-
-let last=performance.now();
-
-function animate(now){
-
- requestAnimationFrame(animate);
-
- const dt=
-  Math.min(
-   (now-last)/1000,
-   .05
-  );
-
- last=now;
-
- if(running){
-
-  spawnTimer-=dt;
-  coinTimer-=dt;
-
-  if(spawnTimer<=0){
-
-   createObstacle();
-
-   spawnTimer=
-    Math.max(
-     .65,
-     1.5-speed
+        }
     );
-  }
 
-  if(coinTimer<=0){
+    if(currentPlayer==="X"){
 
-   createCoin();
+        turnElement.textContent=
+            mode==="ai"
+            ?"دورك ❌"
+            :"دور X ❌";
 
-   coinTimer=.45;
-  }
+    }else{
 
-  updateWorld();
-  updatePlayer(dt);
-  updateObstacles(dt);
-  updateCoins();
-  updateDifficulty();
-  updateUI();
- }
+        turnElement.textContent=
+            mode==="ai"
+            ?"الكمبيوتر ⭕"
+            :"دور O ⭕";
 
- camera.position.lerp(
-  new THREE.Vector3(
-   player.position.x,
-   5.5,
-   player.position.z+9
-  ),
-  .12
- );
+    }
 
- camera.lookAt(
-  player.position.x,
-  1,
-  player.position.z-7
- );
+    document.getElementById(
+        "scoreX"
+    ).textContent=scores.X;
 
- renderer.render(
-  scene,
-  camera
- );
+    document.getElementById(
+        "scoreO"
+    ).textContent=scores.O;
+
+    document.getElementById(
+        "scoreDraw"
+    ).textContent=scores.draw;
+
+    roundElement.textContent=round;
 }
 
-requestAnimationFrame(animate);
+
+/* =========================
+   فحص الفوز
+========================= */
+
+function getWinner(state=board){
+
+    for(const combo of wins){
+
+        const [a,b,c]=combo;
+
+        if(
+            state[a] &&
+            state[a]===state[b] &&
+            state[a]===state[c]
+        ){
+
+            return {
+                player:state[a],
+                combo
+            };
+
+        }
+
+    }
+
+    if(
+        state.every(cell=>cell)
+    ){
+        return {
+            player:"draw",
+            combo:[]
+        };
+    }
+
+    return null;
+}
 
 
 /* =========================
-   Resize
+   نهاية الجولة
 ========================= */
 
-addEventListener(
- "resize",
- ()=>{
+function finish(result){
 
-  camera.aspect=
-   innerWidth/innerHeight;
+    gameOver=true;
 
-  camera.updateProjectionMatrix();
+    if(result.player==="draw"){
 
-  renderer.setSize(
-   innerWidth,
-   innerHeight
-  );
- }
+        scores.draw++;
+
+        resultTitle.textContent=
+            "🤝 تعادل";
+
+        resultText.textContent=
+            "مباراة متقاربة جدًا!";
+
+    }else{
+
+        scores[result.player]++;
+
+        if(
+            mode==="ai" &&
+            result.player==="X"
+        ){
+
+            resultTitle.textContent=
+                "🏆 فزت!";
+
+            resultText.textContent=
+                "مبروك! لقد هزمت الكمبيوتر.";
+
+        }else if(
+            mode==="ai" &&
+            result.player==="O"
+        ){
+
+            resultTitle.textContent=
+                "🤖 الكمبيوتر فاز";
+
+            resultText.textContent=
+                "حاول مرة أخرى!";
+
+        }else{
+
+            resultTitle.textContent=
+                result.player==="X"
+                ?"🏆 X فاز!"
+                :"🏆 O فاز!";
+
+            resultText.textContent=
+                "مباراة رائعة!";
+        }
+
+        result.combo.forEach(
+            i=>{
+                cells[i].classList.add("win");
+            }
+        );
+
+    }
+
+    render();
+
+    setTimeout(
+        ()=>{
+            message.style.display="flex";
+        },
+        350
+    );
+}
+
+
+/* =========================
+   لعب حركة
+========================= */
+
+function play(index){
+
+    if(
+        gameOver ||
+        board[index]
+    ){
+        return;
+    }
+
+    if(
+        mode==="ai" &&
+        currentPlayer==="O"
+    ){
+        return;
+    }
+
+    board[index]=currentPlayer;
+
+    const result=getWinner();
+
+    if(result){
+
+        render();
+
+        finish(result);
+
+        return;
+    }
+
+    currentPlayer=
+        currentPlayer==="X"
+        ?"O"
+        :"X";
+
+    render();
+
+    if(
+        mode==="ai" &&
+        currentPlayer==="O"
+    ){
+
+        setTimeout(
+            computerMove,
+            300
+        );
+
+    }
+}
+
+
+/* =========================
+   حركة الكمبيوتر
+========================= */
+
+function computerMove(){
+
+    if(
+        gameOver ||
+        mode!=="ai" ||
+        currentPlayer!=="O"
+    ){
+        return;
+    }
+
+    let move;
+
+    if(difficulty==="easy"){
+
+        move=randomMove();
+
+    }else if(difficulty==="medium"){
+
+        move=
+            Math.random()<.65
+            ?bestMove()
+            :randomMove();
+
+    }else{
+
+        move=bestMove();
+
+    }
+
+    if(move===undefined)
+        return;
+
+    board[move]="O";
+
+    const result=getWinner();
+
+    if(result){
+
+        render();
+
+        finish(result);
+
+        return;
+    }
+
+    currentPlayer="X";
+
+    render();
+}
+
+
+/* =========================
+   حركة عشوائية
+========================= */
+
+function randomMove(){
+
+    const empty=[];
+
+    board.forEach(
+        (value,index)=>{
+            if(!value)
+                empty.push(index);
+        }
+    );
+
+    if(!empty.length)
+        return;
+
+    return empty[
+        Math.floor(
+            Math.random()*empty.length
+        )
+    ];
+}
+
+
+/* =========================
+   AI Minimax
+========================= */
+
+function bestMove(){
+
+    let bestScore=-Infinity;
+
+    let move;
+
+    for(let i=0;i<9;i++){
+
+        if(!board[i]){
+
+            board[i]="O";
+
+            const score=
+                minimax(
+                    board,
+                    false
+                );
+
+            board[i]="";
+
+            if(score>bestScore){
+
+                bestScore=score;
+                move=i;
+
+            }
+
+        }
+    }
+
+    return move;
+}
+
+
+function minimax(state,isMax){
+
+    const result=
+        getWinner(state);
+
+    if(result){
+
+        if(result.player==="O")
+            return 10;
+
+        if(result.player==="X")
+            return -10;
+
+        return 0;
+    }
+
+    if(isMax){
+
+        let best=-Infinity;
+
+        for(let i=0;i<9;i++){
+
+            if(!state[i]){
+
+                state[i]="O";
+
+                best=Math.max(
+                    best,
+                    minimax(
+                        state,
+                        false
+                    )
+                );
+
+                state[i]="";
+            }
+
+        }
+
+        return best;
+
+    }else{
+
+        let best=Infinity;
+
+        for(let i=0;i<9;i++){
+
+            if(!state[i]){
+
+                state[i]="X";
+
+                best=Math.min(
+                    best,
+                    minimax(
+                        state,
+                        true
+                    )
+                );
+
+                state[i]="";
+            }
+
+        }
+
+        return best;
+    }
+}
+
+
+/* =========================
+   بدء جولة
+========================= */
+
+function newRound(){
+
+    board=
+        Array(9).fill("");
+
+    currentPlayer="X";
+
+    gameOver=false;
+
+    message.style.display="none";
+
+    render();
+}
+
+
+/* =========================
+   تغيير الوضع
+========================= */
+
+function setMode(newMode){
+
+    mode=newMode;
+
+    aiMode.classList.toggle(
+        "active",
+        mode==="ai"
+    );
+
+    twoMode.classList.toggle(
+        "active",
+        mode==="two"
+    );
+
+    difficultyBox.style.display=
+        mode==="ai"
+        ?"grid"
+        :"none";
+
+    newRound();
+}
+
+
+/* =========================
+   الأزرار
+========================= */
+
+cells.forEach(
+    cell=>{
+
+        cell.addEventListener(
+            "pointerdown",
+            e=>{
+
+                e.preventDefault();
+
+                play(
+                    Number(
+                        cell.dataset.i
+                    )
+                );
+
+            }
+        );
+
+    }
 );
 
+
+aiMode.addEventListener(
+    "pointerdown",
+    ()=>{
+        setMode("ai");
+    }
+);
+
+
+twoMode.addEventListener(
+    "pointerdown",
+    ()=>{
+        setMode("two");
+    }
+);
+
+
+document
+.getElementById("newRound")
+.addEventListener(
+    "pointerdown",
+    ()=>{
+        newRound();
+    }
+);
+
+
+document
+.getElementById("resetScore")
+.addEventListener(
+    "pointerdown",
+    ()=>{
+
+        scores={
+            X:0,
+            O:0,
+            draw:0
+        };
+
+        round=1;
+
+        newRound();
+    }
+);
+
+
+resultButton.addEventListener(
+    "pointerdown",
+    ()=>{
+
+        round++;
+
+        newRound();
+    }
+);
+
+
+/* =========================
+   اختيار الصعوبة
+========================= */
+
+document
+.querySelectorAll(
+    "[data-level]"
+)
+.forEach(
+    button=>{
+
+        button.addEventListener(
+            "pointerdown",
+            ()=>{
+
+                difficulty=
+                    button.dataset.level;
+
+                document
+                .querySelectorAll(
+                    "[data-level]"
+                )
+                .forEach(
+                    b=>{
+                        b.classList.toggle(
+                            "active",
+                            b===button
+                        );
+                    }
+                );
+
+                newRound();
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================
+   البداية
+========================= */
+
+render();
+
 </script>
+
 </body>
-</html>
+ </html>
