@@ -3,191 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Survive & Upgrade 3D</title>
+<title>Rush Runner 3D</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#071018;font-family:Arial;color:#fff;touch-action:none}
-#game{position:fixed;inset:0}
-
-#ui{position:fixed;inset:0;pointer-events:none}
-
-.panel{
- background:rgba(0,0,0,.58);
- border:1px solid rgba(255,255,255,.14);
- backdrop-filter:blur(8px);
- border-radius:16px;
- padding:10px 14px;
-}
-
-#stats{
- position:absolute;
- top:12px;
- right:12px;
- min-width:205px;
-}
-
-#waveBox{
- position:absolute;
- top:12px;
- left:12px;
- min-width:150px;
- text-align:center;
-}
-
-.bar{
- height:10px;
- margin-top:6px;
- background:#252a31;
- border-radius:20px;
+html,body{
+ width:100%;
+ height:100%;
  overflow:hidden;
+ background:#07111c;
+ font-family:Arial,sans-serif;
+ touch-action:none;
+ user-select:none;
 }
-
-#hpBar{background:#31df77;width:100%;height:100%}
-#xpBar{background:#4d9cff;width:0%;height:100%}
-
-#crosshair{
- position:absolute;
- left:50%;
- top:50%;
- transform:translate(-50%,-50%);
- width:12px;
- height:12px;
- border:2px solid white;
- border-radius:50%;
- opacity:.7;
-}
-
-#upgrade{
- display:none;
- position:absolute;
+#game{position:fixed;inset:0}
+#ui{
+ position:fixed;
  inset:0;
- background:rgba(0,0,0,.72);
- align-items:center;
- justify-content:center;
- pointer-events:auto;
+ pointer-events:none;
+ color:#fff;
 }
-
-#upgradeBox{
- width:min(92%,600px);
- background:#111722;
- border:1px solid #39475c;
- border-radius:22px;
- padding:22px;
- text-align:center;
- box-shadow:0 20px 70px #000;
-}
-
-#upgradeBox h2{
- margin-bottom:18px;
- font-size:28px;
-}
-
-#choices{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:12px;
-}
-
-.choice{
- background:#1b2635;
- border:1px solid #3b506d;
+.panel{
+ background:rgba(0,0,0,.55);
+ border:1px solid rgba(255,255,255,.16);
+ backdrop-filter:blur(7px);
  border-radius:16px;
- padding:18px 10px;
- color:#fff;
- min-height:130px;
- font-size:16px;
+ padding:10px 15px;
 }
-
-.choice b{
- display:block;
- font-size:21px;
- margin-bottom:10px;
-}
-
-.choice:active{
- transform:scale(.96);
-}
-
-#gameOver{
- display:none;
+#score{
  position:absolute;
- inset:0;
- background:rgba(0,0,0,.8);
- align-items:center;
- justify-content:center;
- text-align:center;
- pointer-events:auto;
-}
-
-#gameOverBox{
- background:#111722;
- border-radius:22px;
- padding:30px;
- width:min(90%,420px);
-}
-
-button{
- border:0;
- border-radius:14px;
- background:#287cff;
- color:#fff;
- padding:13px 25px;
+ top:14px;
+ left:14px;
  font-size:18px;
- font-weight:bold;
 }
-
-#controls{
+#coins{
+ position:absolute;
+ top:14px;
+ right:14px;
+ font-size:18px;
+}
+#speed{
+ position:absolute;
+ top:70px;
+ left:50%;
+ transform:translateX(-50%);
+ font-size:14px;
+}
+#start,#gameover{
  position:absolute;
  inset:0;
-}
-
-#joystick{
- position:absolute;
- left:22px;
- bottom:25px;
- width:125px;
- height:125px;
- border-radius:50%;
- background:rgba(255,255,255,.1);
- border:2px solid rgba(255,255,255,.2);
- pointer-events:auto;
-}
-
-#stick{
- position:absolute;
- left:33px;
- top:33px;
- width:55px;
- height:55px;
- border-radius:50%;
- background:rgba(255,255,255,.35);
-}
-
-#shoot{
- position:absolute;
- right:25px;
- bottom:30px;
- width:92px;
- height:92px;
- border-radius:50%;
- background:rgba(235,55,55,.8);
- border:3px solid rgba(255,255,255,.3);
  display:flex;
  align-items:center;
  justify-content:center;
- font-size:18px;
+ background:rgba(0,0,0,.7);
  pointer-events:auto;
 }
-
-.enemyLabel{
- position:absolute;
- color:white;
- font-size:11px;
+.box{
+ width:min(90%,420px);
+ padding:30px;
+ text-align:center;
+ background:#111b28;
+ border:1px solid #3b4d63;
+ border-radius:24px;
+ box-shadow:0 20px 70px #000;
 }
-
+h1{
+ font-size:40px;
+ margin-bottom:12px;
+}
+p{
+ margin:8px 0;
+ color:#dbe5f1;
+}
+button{
+ margin-top:18px;
+ border:0;
+ background:#287cff;
+ color:white;
+ padding:14px 30px;
+ border-radius:15px;
+ font-size:18px;
+ font-weight:bold;
+}
+#gameover{display:none}
+#touch{
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+}
+#jump,#slide{
+ position:absolute;
+ bottom:28px;
+ width:82px;
+ height:82px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:15px;
+ font-weight:bold;
+ pointer-events:auto;
+}
+#jump{
+ right:25px;
+ background:rgba(38,126,255,.65);
+}
+#slide{
+ left:25px;
+ background:rgba(255,110,50,.65);
+}
 @media(min-width:800px){
- #controls{display:none}
+ #touch{display:none}
 }
 </style>
 </head>
@@ -198,56 +124,41 @@ button{
 
 <div id="ui">
 
-<div id="stats" class="panel">
- ❤️ <span id="hpText">100</span>/100
-
- <div class="bar">
-  <div id="hpBar"></div>
- </div>
-
- ⭐ المستوى <span id="levelText">1</span>
-
- <div class="bar">
-  <div id="xpBar"></div>
- </div>
+<div id="score" class="panel">
+🏆 النقاط: <b id="scoreText">0</b>
 </div>
 
-<div id="waveBox" class="panel">
- 🌊 الموجة <b id="waveText">1</b>
- <br>
- 👹 الأعداء <b id="enemyText">0</b>
+<div id="coins" class="panel">
+🪙 <b id="coinText">0</b>
 </div>
 
-<div id="crosshair"></div>
+<div id="speed" class="panel">
+⚡ السرعة: <b id="speedText">1</b>
+</div>
 
-<div id="upgrade">
- <div id="upgradeBox">
-  <h2>⬆️ مستوى جديد!</h2>
-  <p style="margin-bottom:18px">اختر تطويرًا واحدًا</p>
+<div id="touch">
+ <div id="jump">⬆️ قفز</div>
+ <div id="slide">⬇️ انزلاق</div>
+</div>
 
-  <div id="choices"></div>
+<div id="start">
+ <div class="box">
+  <h1>🏃 Rush Runner</h1>
+  <p>اجري لأطول مسافة ممكنة!</p>
+  <p>اسحب يمين ويسار لتغيير المسار</p>
+  <p>اسحب لأعلى للقفز ولأسفل للانزلاق</p>
+  <button id="startBtn">ابدأ اللعب</button>
  </div>
 </div>
 
-<div id="gameOver">
- <div id="gameOverBox">
-  <h1>💀 انتهت اللعبة</h1>
-  <br>
-  <p>المستوى: <b id="finalLevel">1</b></p>
-  <p>الموجة: <b id="finalWave">1</b></p>
-  <br>
+<div id="gameover">
+ <div class="box">
+  <h1>💥 انتهت اللعبة</h1>
+  <p>النقاط: <b id="finalScore">0</b></p>
+  <p>العملات: 🪙 <b id="finalCoins">0</b></p>
+  <p>أفضل نتيجة: 🏆 <b id="bestScore">0</b></p>
   <button onclick="location.reload()">العب مرة أخرى</button>
  </div>
-</div>
-
-<div id="controls">
-
- <div id="joystick">
-  <div id="stick"></div>
- </div>
-
- <div id="shoot">🔫 إطلاق</div>
-
 </div>
 
 </div>
@@ -257,24 +168,24 @@ button{
 <script>
 
 /* =========================
-   إعداد Three.js
+   Three.js
 ========================= */
 
 const scene=new THREE.Scene();
 
-scene.background=new THREE.Color(0x08121b);
+scene.background=new THREE.Color(0x8cc8ef);
 
 scene.fog=new THREE.Fog(
- 0x08121b,
+ 0x8cc8ef,
  25,
- 75
+ 95
 );
 
 const camera=new THREE.PerspectiveCamera(
  65,
  innerWidth/innerHeight,
  .1,
- 150
+ 180
 );
 
 const renderer=new THREE.WebGLRenderer({
@@ -283,10 +194,13 @@ const renderer=new THREE.WebGLRenderer({
 });
 
 renderer.setPixelRatio(
- Math.min(devicePixelRatio,1.35)
+ Math.min(devicePixelRatio,1.4)
 );
 
-renderer.setSize(innerWidth,innerHeight);
+renderer.setSize(
+ innerWidth,
+ innerHeight
+);
 
 document
  .getElementById("game")
@@ -294,56 +208,104 @@ document
 
 
 /* =========================
-   إضاءة
+   الإضاءة
 ========================= */
 
 scene.add(
  new THREE.HemisphereLight(
-  0xaacbff,
-  0x172016,
+  0xffffff,
+  0x49604d,
   2.2
  )
 );
 
-const light=new THREE.DirectionalLight(
+const sun=new THREE.DirectionalLight(
   0xffffff,
-  1.8
+  2
 );
 
-light.position.set(20,30,10);
+sun.position.set(
+  -10,30,20
+);
 
-scene.add(light);
+scene.add(sun);
 
 
 /* =========================
-   الأرض
+   الطريق
 ========================= */
 
-const ground=new THREE.Mesh(
- new THREE.PlaneGeometry(100,100),
+const roadSegments=[];
+
+const roadMaterial=
  new THREE.MeshStandardMaterial({
-  color:0x263d2b,
+  color:0x30353b,
   roughness:1
- })
-);
+ });
 
-ground.rotation.x=-Math.PI/2;
+const lineMaterial=
+ new THREE.MeshBasicMaterial({
+  color:0xf4e39a
+ });
 
-scene.add(ground);
+const segmentLength=20;
+
+for(let i=0;i<8;i++){
+
+ const segment=new THREE.Group();
+
+ const road=new THREE.Mesh(
+  new THREE.BoxGeometry(
+   12,.2,segmentLength
+  ),
+  roadMaterial
+ );
+
+ road.position.y=-.1;
+
+ segment.add(road);
+
+ for(const x of [-2,2]){
+
+  const line=new THREE.Mesh(
+   new THREE.BoxGeometry(
+    .08,.03,segmentLength
+   ),
+   lineMaterial
+  );
+
+  line.position.set(
+   x,.03,0
+  );
+
+  segment.add(line);
+ }
+
+ segment.position.z=
+  -i*segmentLength;
+
+ scene.add(segment);
+
+ roadSegments.push(segment);
+}
 
 
 /* =========================
-   ديكور الخريطة
+   الجوانب
 ========================= */
 
-function tree(x,z){
+const sideObjects=[];
+
+function createTree(){
 
  const group=new THREE.Group();
 
  const trunk=new THREE.Mesh(
-  new THREE.CylinderGeometry(.18,.25,1.5,6),
+  new THREE.CylinderGeometry(
+   .18,.25,1.5,6
+  ),
   new THREE.MeshStandardMaterial({
-   color:0x69452d
+   color:0x70482c
   })
  );
 
@@ -352,52 +314,34 @@ function tree(x,z){
  group.add(trunk);
 
  const crown=new THREE.Mesh(
-  new THREE.ConeGeometry(1.15,2.5,7),
+  new THREE.ConeGeometry(
+   1.2,2.8,7
+  ),
   new THREE.MeshStandardMaterial({
-   color:0x1e6b3b
+   color:0x218044
   })
  );
 
- crown.position.y=2.25;
+ crown.position.y=2.4;
 
  group.add(crown);
 
- group.position.set(x,0,z);
-
- scene.add(group);
-}
-
-function rock(x,z){
-
- const r=new THREE.Mesh(
-  new THREE.DodecahedronGeometry(
-   .6+Math.random()*.5,
-   0
-  ),
-  new THREE.MeshStandardMaterial({
-   color:0x5c6265
-  })
- );
-
- r.position.set(x,.4,z);
-
- scene.add(r);
+ return group;
 }
 
 for(let i=0;i<35;i++){
 
- let x=(Math.random()-.5)*85;
- let z=(Math.random()-.5)*85;
+ const tree=createTree();
 
- if(Math.abs(x)<8 && Math.abs(z)<8){
-  i--;
-  continue;
- }
+ tree.position.set(
+  Math.random()<.5 ? -8-Math.random()*5 : 8+Math.random()*5,
+  0,
+  -Math.random()*150
+ );
 
- if(Math.random()<.7)
-  tree(x,z);
- else
-  rock(x,z);
+ scene.add(tree);
+
+ sideObjects.push(tree);
 }
 
 
@@ -408,10 +352,12 @@ for(let i=0;i<35;i++){
 const player=new THREE.Group();
 
 const body=new THREE.Mesh(
- new THREE.CapsuleGeometry(.42,.8,4,8),
+ new THREE.CapsuleGeometry(
+  .42,.9,4,8
+ ),
  new THREE.MeshStandardMaterial({
-  color:0x247cff
- })
+  color:0x287cff
+ )
 );
 
 body.position.y=1;
@@ -419,9 +365,11 @@ body.position.y=1;
 player.add(body);
 
 const head=new THREE.Mesh(
- new THREE.SphereGeometry(.38,12,8),
+ new THREE.SphereGeometry(
+  .4,12,8
+ ),
  new THREE.MeshStandardMaterial({
-  color:0xffc39f
+  color:0xffc29e
  })
 );
 
@@ -429,544 +377,447 @@ head.position.y=1.9;
 
 player.add(head);
 
-const gun=new THREE.Mesh(
- new THREE.BoxGeometry(.18,.18,1.15),
- new THREE.MeshStandardMaterial({
-  color:0x171a1d
- })
+player.position.set(
+ 0,0,4
 );
-
-gun.position.set(.5,1.25,-.6);
-
-player.add(gun);
-
-player.position.set(0,0,0);
 
 scene.add(player);
 
 
 /* =========================
-   بيانات اللاعب
+   اللعبة
 ========================= */
 
-let hp=100;
-let maxHp=100;
+let running=false;
+let gameOver=false;
 
-let level=1;
-let xp=0;
-let xpNeeded=100;
+let lane=0;
+let targetX=0;
 
-let damage=25;
-let fireRate=.28;
-let moveSpeed=.13;
+const laneWidth=3;
 
-let wave=1;
+let velocityY=0;
+let grounded=true;
+let sliding=false;
+let slideTimer=0;
 
-let running=true;
+let speed=.42;
+let score=0;
+let coins=0;
 
-let shooting=false;
-let cooldown=0;
+let spawnTimer=0;
+let coinTimer=0;
 
-const enemies=[];
-const bullets=[];
+const obstacles=[];
+const coinObjects=[];
 
 
 /* =========================
-   إنشاء العدو
+   العقبات
 ========================= */
 
-function spawnEnemy(boss=false){
+function createObstacle(){
 
- const enemy=new THREE.Group();
+ const laneIndex=
+  Math.floor(Math.random()*3)-1;
 
- const color=boss?0x8e25d8:0xe04444;
+ const type=
+  Math.random()<.25
+   ?"high"
+   :"block";
 
- const b=new THREE.Mesh(
-  new THREE.CapsuleGeometry(
-   boss?.65:.4,
-   boss?1.3:.7,
-   4,
-   8
+ const obstacle=new THREE.Mesh(
+  type==="high"
+   ?new THREE.BoxGeometry(2.4,1.1,1.5)
+   :new THREE.BoxGeometry(2.3,2.2,1.5),
+
+  new THREE.MeshStandardMaterial({
+   color:type==="high"
+    ?0xffa52f
+    :0xe54545
+  })
+ );
+
+ obstacle.position.set(
+  laneIndex*laneWidth,
+  type==="high"?.55:1.1,
+  -90
+ );
+
+ obstacle.userData={
+  lane:laneIndex,
+  type,
+  passed:false
+ };
+
+ scene.add(obstacle);
+ obstacles.push(obstacle);
+}
+
+
+/* =========================
+   العملات
+========================= */
+
+function createCoin(){
+
+ const laneIndex=
+  Math.floor(Math.random()*3)-1;
+
+ const coin=new THREE.Mesh(
+  new THREE.TorusGeometry(
+   .35,.12,8,16
   ),
   new THREE.MeshStandardMaterial({
-   color
+   color:0xffd43b,
+   emissive:0x4a3500
   })
  );
 
- b.position.y=boss?1.3:1;
-
- enemy.add(b);
-
- const angle=Math.random()*Math.PI*2;
-
- const distance=8+Math.random()*7;
-
- enemy.position.set(
-  player.position.x+
-   Math.cos(angle)*distance,
-  0,
-  player.position.z+
-   Math.sin(angle)*distance
+ coin.position.set(
+  laneIndex*laneWidth,
+  1.2+Math.random()*1.2,
+  -90
  );
 
- enemy.userData={
-  hp:boss?400:60+wave*10,
-  maxHp:boss?400:60+wave*10,
-  speed:boss?.018:.035+wave*.002,
-  attack:0,
-  boss
+ coin.userData={
+  lane:laneIndex
  };
 
- scene.add(enemy);
+ scene.add(coin);
 
- enemies.push(enemy);
+ coinObjects.push(coin);
 }
 
 
 /* =========================
-   بدء الموجة
+   القفز
 ========================= */
 
-function startWave(){
+function jump(){
 
- const amount=
-  Math.min(
-   5+wave*2,
-   35
+ if(!running || !grounded || sliding)
+  return;
+
+ velocityY=.34;
+ grounded=false;
+}
+
+
+/* =========================
+   انزلاق
+========================= */
+
+function slide(){
+
+ if(!running || !grounded)
+  return;
+
+ sliding=true;
+ slideTimer=.55;
+}
+
+
+/* =========================
+   تغيير المسار
+========================= */
+
+function moveLane(direction){
+
+ if(!running)return;
+
+ lane+=direction;
+
+ lane=Math.max(
+  -1,
+  Math.min(1,lane)
+ );
+
+ targetX=
+  lane*laneWidth;
+}
+
+
+/* =========================
+   التصادم
+========================= */
+
+function collisionWithObstacle(o){
+
+ const dx=
+  Math.abs(
+   player.position.x-
+   o.position.x
   );
 
- for(let i=0;i<amount;i++)
-  spawnEnemy(false);
+ const dz=
+  Math.abs(
+   player.position.z-
+   o.position.z
+  );
 
- if(wave%5===0)
-  spawnEnemy(true);
-}
+ if(dx<1.05 && dz<1.15){
 
+  if(o.userData.type==="high"){
 
-/* =========================
-   أقرب عدو
-========================= */
+   /* القفز فوق الحاجز */
 
-function nearestEnemy(){
+   if(player.position.y>.8)
+    return false;
 
- let best=null;
- let dist=Infinity;
+   /* الانزلاق تحته */
 
- for(const e of enemies){
-
-  const d=
-   player.position.distanceTo(
-    e.position
-   );
-
-  if(d<dist){
-
-   dist=d;
-   best=e;
+   if(sliding)
+    return false;
   }
+
+  return true;
  }
 
- return best;
+ return false;
 }
 
 
 /* =========================
-   إطلاق النار
+   تحديث العقبات
 ========================= */
 
-function shoot(){
+function updateObstacles(dt){
 
- if(!running || cooldown>0)
-  return;
+ for(let i=obstacles.length-1;i>=0;i--){
 
- const target=nearestEnemy();
+  const o=obstacles[i];
 
- if(!target)
-  return;
+  o.position.z+=speed;
 
- cooldown=fireRate;
+  o.rotation.y+=.01;
 
- const bullet=new THREE.Mesh(
-  new THREE.SphereGeometry(.1,6,6),
-  new THREE.MeshBasicMaterial({
-   color:0xffe56a
-  })
- );
+  if(
+   !o.userData.passed &&
+   o.position.z>player.position.z
+  ){
 
- bullet.position.copy(player.position);
- bullet.position.y=1.25;
+   o.userData.passed=true;
 
- const direction=
-  target.position.clone()
-   .add(new THREE.Vector3(0,1,0))
-   .sub(bullet.position)
-   .normalize();
-
- bullet.userData={
-  velocity:direction.multiplyScalar(.75),
-  life:80,
-  damage
- };
-
- scene.add(bullet);
-
- bullets.push(bullet);
-
- player.lookAt(
-  target.position.x,
-  0,
-  target.position.z
- );
-}
-
-
-/* =========================
-   تحديث الرصاص
-========================= */
-
-function updateBullets(){
-
- for(let i=bullets.length-1;i>=0;i--){
-
-  const b=bullets[i];
-
-  b.position.add(
-   b.userData.velocity
-  );
-
-  b.userData.life--;
-
-  let hit=false;
-
-  for(let j=enemies.length-1;j>=0;j--){
-
-   const e=enemies[j];
-
-   if(
-    b.position.distanceTo(
-     e.position.clone()
-      .add(new THREE.Vector3(0,1,0))
-    )<.9
-   ){
-
-    e.userData.hp-=b.userData.damage;
-
-    hit=true;
-
-    if(e.userData.hp<=0){
-
-     const gained=
-      e.userData.boss?100:25;
-
-     addXP(gained);
-
-     scene.remove(e);
-
-     enemies.splice(j,1);
-    }
-
-    break;
-   }
+   score+=10;
   }
 
   if(
-   hit ||
-   b.userData.life<=0
+   collisionWithObstacle(o)
   ){
 
-   scene.remove(b);
+   endGame();
+   return;
+  }
 
-   bullets.splice(i,1);
+  if(o.position.z>15){
+
+   scene.remove(o);
+   obstacles.splice(i,1);
   }
  }
 }
 
 
 /* =========================
-   الأعداء
+   تحديث العملات
 ========================= */
 
-function updateEnemies(){
+function updateCoins(){
 
- for(const e of enemies){
+ for(let i=coinObjects.length-1;i>=0;i--){
 
-  const direction=
-   new THREE.Vector3()
-    .subVectors(
-     player.position,
-     e.position
-    );
+  const c=coinObjects[i];
 
-  const distance=direction.length();
+  c.position.z+=speed;
 
-  direction.normalize();
+  c.rotation.y+=.08;
 
-  if(distance>1.7){
-
-   e.position.add(
-    direction.multiplyScalar(
-     e.userData.speed
-    )
+  const dx=
+   Math.abs(
+    player.position.x-
+    c.position.x
    );
 
-  }else{
+  const dz=
+   Math.abs(
+    player.position.z-
+    c.position.z
+   );
 
-   e.userData.attack--;
+  const dy=
+   Math.abs(
+    player.position.y+1-
+    c.position.y
+   );
 
-   if(e.userData.attack<=0){
+  if(
+   dx<1 &&
+   dz<1.2 &&
+   dy<1
+  ){
 
-    e.userData.attack=50;
+   coins++;
 
-    damage(
-     e.userData.boss?12:6
-    );
-   }
+   score+=25;
+
+   scene.remove(c);
+
+   coinObjects.splice(i,1);
+
+   continue;
   }
 
-  e.lookAt(
-   player.position.x,
-   0,
-   player.position.z
-  );
+  if(c.position.z>15){
+
+   scene.remove(c);
+   coinObjects.splice(i,1);
+  }
  }
 }
 
 
 /* =========================
-   ضرر اللاعب
+   العالم يتحرك
 ========================= */
 
-function damage(amount){
+function updateWorld(){
 
- hp-=amount;
+ for(const segment of roadSegments){
 
- if(hp<=0){
+  segment.position.z+=speed;
 
-  hp=0;
-  endGame();
+  if(segment.position.z>15){
+
+   segment.position.z-=8*segmentLength;
+  }
+ }
+
+ for(const tree of sideObjects){
+
+  tree.position.z+=speed;
+
+  if(tree.position.z>20){
+
+   tree.position.z=
+    -150-Math.random()*30;
+
+   tree.position.x=
+    Math.random()<.5
+     ?-8-Math.random()*5
+     :8+Math.random()*5;
+  }
  }
 }
 
 
 /* =========================
-   XP
+   اللاعب
 ========================= */
 
-function addXP(amount){
+function updatePlayer(dt){
 
- xp+=amount;
+ player.position.x+=
+  (targetX-player.position.x)*.18;
 
- while(xp>=xpNeeded){
+ if(!grounded){
 
-  xp-=xpNeeded;
+  velocityY-=.018;
 
-  level++;
+  player.position.y+=velocityY;
 
-  xpNeeded=
-   Math.floor(
-    xpNeeded*1.3
-   );
+  if(player.position.y<=0){
 
-  showUpgrades();
+   player.position.y=0;
+   velocityY=0;
+   grounded=true;
+  }
  }
+
+ if(sliding){
+
+  slideTimer-=dt;
+
+  if(slideTimer<=0)
+   sliding=false;
+ }
+
+ /* الحركة الانحنائية */
+
+ const desiredScaleY=
+  sliding?.55:1;
+
+ body.scale.y+=
+  (desiredScaleY-body.scale.y)*.25;
+
+ head.position.y=
+  sliding?1.25:1.9;
+
+ score+=speed*.08;
 }
 
 
 /* =========================
-   الترقيات
+   زيادة السرعة
 ========================= */
 
-const upgradeList=[
+function updateDifficulty(){
 
- {
-  title:"⚡ سرعة الحركة",
-  text:"+20% سرعة",
-  apply:()=>{
-   moveSpeed*=1.2;
-  }
- },
+ speed+=.000035;
 
- {
-  title:"💥 الضرر",
-  text:"+30% ضرر",
-  apply:()=>{
-   damage*=1.3;
-  }
- },
-
- {
-  title:"🔫 سرعة إطلاق النار",
-  text:"إطلاق أسرع",
-  apply:()=>{
-   fireRate=Math.max(
-    .08,
-    fireRate*.78
-   );
-  }
- },
-
- {
-  title:"❤️ صحة",
-  text:"+25 صحة",
-  apply:()=>{
-   maxHp+=25;
-   hp=Math.min(
-    maxHp,
-    hp+25
-   );
-  }
- }
-
-];
+ if(speed>1.15)
+  speed=1.15;
+}
 
 
-function showUpgrades(){
+/* =========================
+   Game Over
+========================= */
 
+function endGame(){
+
+ if(gameOver)return;
+
+ gameOver=true;
  running=false;
 
- const box=
-  document.getElementById(
-   "choices"
+ const old=
+  Number(
+   localStorage.getItem(
+    "rushBest"
+   )||0
   );
 
- box.innerHTML="";
+ const best=
+  Math.max(
+   old,
+   Math.floor(score)
+  );
 
- const options=[
-  ...upgradeList
- ]
- .sort(()=>Math.random()-.5)
- .slice(0,3);
-
- for(const option of options){
-
-  const button=
-   document.createElement("button");
-
-  button.className="choice";
-
-  button.innerHTML=
-   `<b>${option.title}</b>
-    ${option.text}`;
-
-  button.onclick=()=>{
-
-   option.apply();
-
-   document.getElementById(
-    "upgrade"
-   ).style.display="none";
-
-   running=true;
-  };
-
-  box.appendChild(button);
- }
+ localStorage.setItem(
+  "rushBest",
+  best
+ );
 
  document.getElementById(
-  "upgrade"
- ).style.display="flex";
-}
+  "finalScore"
+ ).textContent=
+  Math.floor(score);
 
+ document.getElementById(
+  "finalCoins"
+ ).textContent=
+  coins;
 
-/* =========================
-   الموجات
-========================= */
+ document.getElementById(
+  "bestScore"
+ ).textContent=
+  best;
 
-function checkWave(){
-
- if(
-  enemies.length===0
- ){
-
-  wave++;
-
-  startWave();
- }
-}
-
-
-/* =========================
-   حركة اللاعب
-========================= */
-
-const keys={};
-
-addEventListener(
- "keydown",
- e=>{
-  keys[e.key.toLowerCase()]=true;
- }
-);
-
-addEventListener(
- "keyup",
- e=>{
-  keys[e.key.toLowerCase()]=false;
- }
-);
-
-let joyX=0;
-let joyY=0;
-
-function updatePlayer(){
-
- let x=0;
- let z=0;
-
- if(keys.w||keys.arrowup)z-=1;
- if(keys.s||keys.arrowdown)z+=1;
- if(keys.a||keys.arrowleft)x-=1;
- if(keys.d||keys.arrowright)x+=1;
-
- x+=joyX;
- z+=joyY;
-
- const len=Math.hypot(x,z);
-
- if(len>1){
-  x/=len;
-  z/=len;
- }
-
- player.position.x+=x*moveSpeed;
- player.position.z+=z*moveSpeed;
-
- const target=nearestEnemy();
-
- if(target){
-
-  player.lookAt(
-   target.position.x,
-   0,
-   target.position.z
-  );
- }
-}
-
-
-/* =========================
-   الكاميرا
-========================= */
-
-function updateCamera(){
-
- const desired=
-  new THREE.Vector3(
-   player.position.x,
-   player.position.y+7,
-   player.position.z+8
-  );
-
- camera.position.lerp(
-  desired,
-  .1
- );
-
- camera.lookAt(
-  player.position.x,
-  .8,
-  player.position.z
- );
+ document.getElementById(
+  "gameover"
+ ).style.display=
+  "flex";
 }
 
 
@@ -977,180 +828,146 @@ function updateCamera(){
 function updateUI(){
 
  document.getElementById(
-  "hpText"
+  "scoreText"
  ).textContent=
-  Math.ceil(hp);
+  Math.floor(score);
 
  document.getElementById(
-  "hpBar"
- ).style.width=
-  (hp/maxHp*100)+"%";
-
- document.getElementById(
-  "levelText"
+  "coinText"
  ).textContent=
-  level;
+  coins;
 
  document.getElementById(
-  "xpBar"
- ).style.width=
-  (xp/xpNeeded*100)+"%";
-
- document.getElementById(
-  "waveText"
+  "speedText"
  ).textContent=
-  wave;
-
- document.getElementById(
-  "enemyText"
- ).textContent=
-  enemies.length;
+  speed.toFixed(1);
 }
 
 
 /* =========================
-   Game Over
+   بداية اللعبة
 ========================= */
 
-function endGame(){
-
- running=false;
-
- document.getElementById(
-  "finalLevel"
- ).textContent=level;
+document.getElementById(
+ "startBtn"
+).onclick=()=>{
 
  document.getElementById(
-  "finalWave"
- ).textContent=wave;
+  "start"
+ ).style.display="none";
 
- document.getElementById(
-  "gameOver"
- ).style.display="flex";
-}
+ running=true;
+
+ for(let i=0;i<5;i++)
+  createObstacle();
+
+ for(let i=0;i<8;i++)
+  createCoin();
+};
 
 
 /* =========================
-   Touch Joystick
+   Touch
 ========================= */
 
-const joystick=
- document.getElementById(
-  "joystick"
- );
+let touchStartX=0;
+let touchStartY=0;
 
-const stick=
- document.getElementById(
-  "stick"
- );
-
-let joyActive=false;
-
-joystick.addEventListener(
- "pointerdown",
+addEventListener(
+ "touchstart",
  e=>{
 
-  joyActive=true;
+  if(!running)return;
 
-  joystick.setPointerCapture(
-   e.pointerId
-  );
- }
+  const t=e.touches[0];
+
+  touchStartX=t.clientX;
+  touchStartY=t.clientY;
+ },
+ {passive:false}
 );
 
-joystick.addEventListener(
- "pointermove",
+addEventListener(
+ "touchend",
  e=>{
 
-  if(!joyActive)return;
+  if(!running)return;
 
-  const r=
-   joystick.getBoundingClientRect();
+  const t=e.changedTouches[0];
 
-  let x=
-   e.clientX-
-   (r.left+r.width/2);
+  const dx=
+   t.clientX-touchStartX;
 
-  let y=
-   e.clientY-
-   (r.top+r.height/2);
+  const dy=
+   t.clientY-touchStartY;
 
-  const max=45;
-
-  const d=Math.hypot(x,y);
-
-  if(d>max){
-
-   x=x/d*max;
-   y=y/d*max;
+  if(
+   Math.abs(dx)<35 &&
+   Math.abs(dy)<35
+  ){
+   jump();
+   return;
   }
 
-  stick.style.transform=
-   `translate(${x}px,${y}px)`;
+  if(Math.abs(dx)>Math.abs(dy)){
 
-  joyX=x/max;
-  joyY=y/max;
- }
-);
+   if(dx>40)
+    moveLane(1);
 
-function resetJoy(){
+   if(dx<-40)
+    moveLane(-1);
 
- joyActive=false;
+  }else{
 
- joyX=0;
- joyY=0;
+   if(dy<-40)
+    jump();
 
- stick.style.transform=
-  "translate(0,0)";
-}
-
-joystick.addEventListener(
- "pointerup",
- resetJoy
-);
-
-joystick.addEventListener(
- "pointercancel",
- resetJoy
+   if(dy>40)
+    slide();
+  }
+ },
+ {passive:false}
 );
 
 
-/* =========================
-   زر إطلاق
-========================= */
+/* أزرار الهاتف */
 
-const shootButton=
- document.getElementById(
-  "shoot"
- );
-
-shootButton.addEventListener(
+document.getElementById(
+ "jump"
+).addEventListener(
  "pointerdown",
- ()=>{
-  shooting=true;
- }
+ jump
 );
 
-shootButton.addEventListener(
- "pointerup",
- ()=>{
-  shooting=false;
- }
-);
-
-shootButton.addEventListener(
- "pointercancel",
- ()=>{
-  shooting=false;
- }
+document.getElementById(
+ "slide"
+).addEventListener(
+ "pointerdown",
+ slide
 );
 
 
 /* =========================
-   بدء اللعبة
+   Keyboard
 ========================= */
 
-startWave();
+addEventListener(
+ "keydown",
+ e=>{
+
+  if(e.key==="ArrowLeft"||e.key==="a")
+   moveLane(-1);
+
+  if(e.key==="ArrowRight"||e.key==="d")
+   moveLane(1);
+
+  if(e.key==="ArrowUp"||e.key==="w"||e.key===" ")
+   jump();
+
+  if(e.key==="ArrowDown"||e.key==="s")
+   slide();
+ }
+);
 
 
 /* =========================
@@ -1173,24 +990,49 @@ function animate(now){
 
  if(running){
 
-  updatePlayer();
+  spawnTimer-=dt;
+  coinTimer-=dt;
 
-  updateEnemies();
+  if(spawnTimer<=0){
 
-  updateBullets();
+   createObstacle();
 
-  updateCamera();
+   spawnTimer=
+    Math.max(
+     .65,
+     1.5-speed
+    );
+  }
 
-  if(shooting)
-   shoot();
+  if(coinTimer<=0){
 
-  if(cooldown>0)
-   cooldown-=dt;
+   createCoin();
 
-  checkWave();
+   coinTimer=.45;
+  }
 
+  updateWorld();
+  updatePlayer(dt);
+  updateObstacles(dt);
+  updateCoins();
+  updateDifficulty();
   updateUI();
  }
+
+ camera.position.lerp(
+  new THREE.Vector3(
+   player.position.x,
+   5.5,
+   player.position.z+9
+  ),
+  .12
+ );
+
+ camera.lookAt(
+  player.position.x,
+  1,
+  player.position.z-7
+ );
 
  renderer.render(
   scene,
@@ -1208,6 +1050,7 @@ requestAnimationFrame(animate);
 addEventListener(
  "resize",
  ()=>{
+
   camera.aspect=
    innerWidth/innerHeight;
 
@@ -1221,6 +1064,5 @@ addEventListener(
 );
 
 </script>
-
 </body>
 </html>
