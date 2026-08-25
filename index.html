@@ -240,15 +240,19 @@ button.active{
 }
 </style>
 <script src="https://bridge.playgama.com/v2/stable/playgama-bridge.js"></script>
+
 <script>
     bridge.initialize()
-    .then(() => {
-        // initialization was successful, SDK can be used
-    })
-    bridge.platform.sendMessage("game_ready")
-    .catch(error => {
-        // error, something went wrong
-    })</script>
+        .then(() => {
+            console.log("PlayGama Bridge initialized");
+
+            // إخبار PlayGama أن اللعبة أصبحت جاهزة
+            bridge.platform.sendMessage("game_ready");
+        })
+        .catch(error => {
+            console.error("PlayGama Bridge initialization failed:", error);
+        });
+</script>
 </head>
 
 <body>
